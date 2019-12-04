@@ -17,10 +17,7 @@ class Song:
 
 		if check:
 			self.check()
-	@staticmethod
-	def fetch(res):
-		r=Song(res[1])
-		r.artist_id=
+
 	def check(self):
 		if self.name is None or type(self.name) is not str or len(self.name) < 1:
 			raise Exception("name propperty isn't correct")
@@ -39,6 +36,12 @@ class Artist:
 		self.name=name
 
 
+
 class Album:
-	def __init__(self,name):
+	def __init__(self,name,artist=None):
 		self.name=name
+		self.artist = artist
+		if self.artist is not None:
+			self.artist_id = artist.id
+		else:
+			self.artist_id = None

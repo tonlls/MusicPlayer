@@ -63,7 +63,7 @@ class MySql:
 	def _run_delete(sql):
 		cursor = MySql._get_cursor()
 		cursor.execute(sql)
-		MySql.commit()
+		MySql._commit()
 
 	@staticmethod
 	def _run_script(path):
@@ -109,22 +109,36 @@ class DataStorage(Model.DataStorage):
 
 	def get_song(self, id=None, name=None):
 		if id is None and name is None:
-			raise Exception()
-		elif id is not None:
-			sql = 'SELECT id,name,data,artist_id,album_id FROM song WHERE id=' + str(id) + ';'
+			raise Exception("")
+		else:
+			sql = 'SELECT id,name,data,artist_id,album_id FROM song WHERE '
+			if id is not None:
+				sql += 'id=' + str(id) + ';'
+			elif name is not None:
+				sql += 'name=\'' + name + '\';'
 			res = MySql._run_select(sql)
 			song = DataModel.Song(res[1], res[2], self.get_artist(res[3]), self.get_album(res[4]))
 			song.id = res[0]
 			return song
 
 	def add_album(self, album):
-		pass
+		sql = 'INSERT INTO album(name,artist_id) VALUES(%s,%s);'
+		val = (album.name, album.artist_id)
+		return MySql._run_insert(sql, val)
 
 	def get_album(self, id=None, name=None):
-		return None
-
-	def get_album_id(self, name):
-		pass
+		if id is None and name is None:
+			raise Exception()
+		else:
+			sql = 'SELECT id,name,artist_id FROM album WHERE '
+			if id is not None:
+				sql += 'id=' + str(id) + ';'
+			elif name is not None:
+				sql += 'name=\'' + name + '\';'
+			res = MySql._run_select(sql)
+			song = DataModel.Album(res[1],self.get_artist(res[2]))
+			song.id = res[0]
+			return song
 
 	def add_artist(self, artist):
 		pass
@@ -132,8 +146,6 @@ class DataStorage(Model.DataStorage):
 	def get_artist(self, id=None, name=None):
 		return None
 
-	def get_artist_id(self, name):
-		pass
 
 
 class FileStorage(Model.FileStorage):

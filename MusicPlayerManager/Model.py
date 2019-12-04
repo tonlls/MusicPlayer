@@ -36,7 +36,7 @@ class StorageManager:
 		song = self.file_storage.get_song(id,name)
 
 
-class Storage:
+class __Storage:
 	__metaclass__ = abc.ABCMeta
 
 	@abc.abstractmethod
@@ -52,11 +52,11 @@ class Storage:
 		pass
 
 
-class FileStorage(Storage, ABC):
+class FileStorage(__Storage, ABC):
 	__metaclass__ = abc.ABCMeta
 
 
-class DataStorage(Storage, ABC):
+class DataStorage(__Storage, ABC):
 	__metaclass__ = abc.ABCMeta
 
 	@abc.abstractmethod
@@ -68,17 +68,9 @@ class DataStorage(Storage, ABC):
 		pass
 
 	@abc.abstractmethod
-	def get_album_id(self, name):
-		pass
-
-	@abc.abstractmethod
 	def add_artist(self, artist):
 		pass
 
 	@abc.abstractmethod
 	def get_artist(self, id=None, name=None):
-		pass
-
-	@abc.abstractmethod
-	def get_artist_id(self, name):
 		pass
