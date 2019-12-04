@@ -3,8 +3,7 @@ import requests
 
 
 class APIRest:
-	def __init__(self, id, baseurl, user=None, password=None):
-		self.id = id
+	def __init__(self, baseurl, user=None, password=None):
 		self.baseurl = baseurl
 		self.user = user
 		self.password = password
@@ -22,7 +21,7 @@ class APIRest:
 
 class FileStorage(Model.FileStorage):
 	def connect(self, host, user, password, db_name):
-		pass
+		self.server=APIRest(host,user,password)
 
 	def add_song(self, song):
 		pass
@@ -33,7 +32,7 @@ class FileStorage(Model.FileStorage):
 
 class DataStorage(Model.DataStorage):
 	def connect(self, host, user, password, db_name):
-		pass
+		self.server=APIRest(host,user,password)
 
 	def add_song(self, song):
 		pass

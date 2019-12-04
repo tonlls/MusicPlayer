@@ -24,3 +24,10 @@ CREATE TABLE song(
 	FOREIGN KEY (artist_id) REFERENCES artist(id),
 	FOREIGN KEY (album_id) REFERENCES album(id)
 );
+
+CREATE TABLE song_data(
+	song_id INT,
+	data BLOB NOT NULL.
+
+	FOREIGN KEY (song_id) REFERENCES song(id)
+);
