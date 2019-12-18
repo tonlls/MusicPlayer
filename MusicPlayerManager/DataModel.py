@@ -1,6 +1,20 @@
+class Playlist:
+	def __init__(self, songs=[]):
+		if all(isinstance(x, Song) for x in songs):
+			self.songs = songs
+		else:
+			raise Exception('songs must be from type Song')
+
+	def add(self, song):
+		if isinstance(song, Song):
+			self.songs.append(song)
+		else:
+			raise Exception('you can not add a non Song type object')
+
+
 class Song:
-	def __init__(self, name, data='', artist=None, album=None, path=None, check=True):
-		self.id = None
+	def __init__(self, name, id=None, data='', artist=None, album=None, path=None, check=True):
+		self.id = id
 		self.name = name
 		self.path = path
 		self.data = data
@@ -19,7 +33,12 @@ class Song:
 			self.check()
 
 	def to_dict(self):
-		return self.__dict__;
+		return {'name': self.name, 'data': self.data, 'artist_id': self.artist_id, 'artist_id': self.artist_id};
+
+	# return {'id':self.id,'name':self.name,'data':self.data,'artist_id':self.artist_id,'artist_id':self.artist_id};
+	@staticmethod
+	def from_dict(dict):
+		return Song(dict['id'], dict['name'], dict['data'])
 
 	def check(self):
 		if self.name is None or type(self.name) is not str or len(self.name) < 1:

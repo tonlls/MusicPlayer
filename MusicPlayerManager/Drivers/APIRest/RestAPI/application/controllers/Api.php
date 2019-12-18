@@ -20,7 +20,7 @@ class Api extends REST_Controller {
 			$this->response($data, REST_Controller::HTTP_OK);
 		}
 		else
-			$this->response($data, REST_Controller::HTTP_BAD_REQUEST);
+			$this->response(null, REST_Controller::HTTP_BAD_REQUEST);
 	}
 	public function song_data_post(){
 		$in=$this->input->post();

@@ -1,5 +1,5 @@
 <?php
-class Song extends CI_Model {
+class Album extends CI_Model {
 	public function __construct() {
 		parent::__construct();
 		$this->load->database();

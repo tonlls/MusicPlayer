@@ -1,7 +1,7 @@
 from setuptools import setup,find_packages
 
 setup(
-	version=1.3,
-	name='MusicPlayerManager',
+	version=1.2,
+	name='MusicPlayerGUI',
 	packages=find_packages(),
 )

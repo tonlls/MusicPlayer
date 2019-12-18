@@ -51,6 +51,9 @@ class __Storage:
 	def get_song(self, id=None, name=None):
 		pass
 
+	@abc.abstractmethod
+	def get_songs(self):
+		pass
 
 class FileStorage(__Storage, ABC):
 	__metaclass__ = abc.ABCMeta
@@ -58,6 +61,7 @@ class FileStorage(__Storage, ABC):
 
 class DataStorage(__Storage, ABC):
 	__metaclass__ = abc.ABCMeta
+
 
 	@abc.abstractmethod
 	def add_album(self, album):

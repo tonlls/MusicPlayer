@@ -1,7 +1,7 @@
 import os
 from MusicPlayerManager import Model, DataModel
-import mysql.connector
-
+# import mysql.connector
+import pymysql
 
 class MySql:
 	__MYDB = None
@@ -55,8 +55,11 @@ class MySql:
 	@staticmethod
 	def _run_insert(sql, val):
 		cursor = MySql._get_cursor()
-		cursor.execute(sql, val)
-		MySql._commit()
+		try:
+			cursor.execute(sql, val)
+			MySql._commit()
+		except:
+			MySql.__rollback()
 		return cursor.lastrowid
 
 	@staticmethod
@@ -82,11 +85,12 @@ class MySql:
 
 	def _connect(self):
 		if MySql.__MYDB is None:
-			MySql.__MYDB = mysql.connector.connect(
-				host=self.host,
-				user=self.user,
-				passwd=self.password
-			)
+			# MySql.__MYDB = mysql.connector.connect(
+			# 	host=self.host,
+			# 	user=self.user,
+			# 	passwd=self.password
+			# )
+			MySql.__MYDB = pymysql.connect(self.host, self.user, self.password)
 			if MySql.RESET_BD:
 				MySql._run_script(os.path.join(os.path.dirname(__file__), 'del_db.sql'))
 			sql = 'SELECT COUNT(SCHEMA_NAME) FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = \'' + self.db_name + '\''
@@ -107,6 +111,12 @@ class DataStorage(Model.DataStorage):
 		val = (song.name, song.artist_id, song.album_id)
 		return MySql._run_insert(sql, val)
 
+	def get_songs(self):
+		sql = 'SELECT * FROM song;'
+		res = MySql._run_select(sql)
+		result = [DataModel.Song(r[1], r[0], r[2], self.get_artist(r[3]), self.get_album(r[4])) for r in res]
+		return result
+
 	def get_song(self, id=None, name=None):
 		if id is None and name is None:
 			raise Exception("")
@@ -117,8 +127,7 @@ class DataStorage(Model.DataStorage):
 			elif name is not None:
 				sql += 'name=\'' + name + '\';'
 			res = MySql._run_select(sql)
-			song = DataModel.Song(res[1], res[2], self.get_artist(res[3]), self.get_album(res[4]))
-			song.id = res[0]
+			song = DataModel.Song(res[1], res[0], res[2], self.get_artist(res[3]), self.get_album(res[4]))
 			return song
 
 	def add_album(self, album):
@@ -128,7 +137,7 @@ class DataStorage(Model.DataStorage):
 
 	def get_album(self, id=None, name=None):
 		if id is None and name is None:
-			raise Exception()
+			pass
 		else:
 			sql = 'SELECT id,name,artist_id FROM album WHERE '
 			if id is not None:
@@ -136,7 +145,7 @@ class DataStorage(Model.DataStorage):
 			elif name is not None:
 				sql += 'name=\'' + name + '\';'
 			res = MySql._run_select(sql)
-			song = DataModel.Album(res[1],self.get_artist(res[2]))
+			song = DataModel.Album(res[1], self.get_artist(res[2]))
 			song.id = res[0]
 			return song
 
@@ -147,8 +156,10 @@ class DataStorage(Model.DataStorage):
 		return None
 
 
-
 class FileStorage(Model.FileStorage):
+
+	def get_songs(self):
+		pass
 
 	def connect(self, host, user, password, db_name):
 		MySql(host, user, password, db_name)
